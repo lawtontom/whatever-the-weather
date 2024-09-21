@@ -9,8 +9,9 @@ import { dailyForecast } from "./types/dailyForecast";
 import { weatherResponse } from "./types/weatherResponse";
 
 const processWeatherData = (weather: weatherResponse) => {
-    const forecast = weather.daily.time.reduce(
-        (acc: dailyForecast[], time: string, index: number) => {
+    const forecast = weather.daily.time
+        .slice(0, 5)
+        .reduce((acc: dailyForecast[], time: string, index: number) => {
             const daily: dailyForecast = {
                 time: time,
                 weather_code: weather.daily.weather_code[index],
@@ -22,9 +23,7 @@ const processWeatherData = (weather: weatherResponse) => {
             };
 
             return [...acc, daily];
-        },
-        []
-    );
+        }, []);
 
     return forecast;
 };
@@ -35,6 +34,7 @@ const App = () => {
     const [locations, setLocations] = useState<location[]>([]);
     const [userLocation, setUserLocation] = useState<string>("");
     const [location, setLocation] = useState<location | null>(null);
+    const [error, setError] = useState<string | null>(null);
 
     // Clear the weather data when the location changes
     useEffect(() => {
@@ -45,6 +45,7 @@ const App = () => {
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
+        setError(null);
         setWeather([]);
         setWeatherLoaded(false);
         fetchLocations(userLocation);
@@ -70,13 +71,18 @@ const App = () => {
 
         if (response.ok) {
             const data = await response.json();
-            setLocations(data.results);
+            if (!data.results || data.results.length === 0) {
+                setError("No locations found, please try again");
+                setLocations([]);
+            } else {
+                setLocations(data.results);
+            }
         }
     };
 
     return (
         <main className="site-wrapper">
-            <header>
+            <header className="header">
                 <img
                     className="logo"
                     src={logo}
@@ -97,15 +103,24 @@ const App = () => {
                     <button>Search</button>
                 </form>
             </section>
-            {weatherLoaded ? (
-                <WeatherResult weather={weather} />
-            ) : !userLocation ? (
-                <p className="search-help">
-                    Please search for a location to see the weather
-                </p>
-            ) : (
-                <LocationList locations={locations} setLocation={setLocation} />
-            )}
+            <section className="content">
+                {error ? (
+                    <section className="error">
+                        {error && <p>{error}</p>}
+                    </section>
+                ) : weatherLoaded ? (
+                    <WeatherResult weather={weather} location={location} />
+                ) : !userLocation ? (
+                    <p className="search-help">
+                        Please search for a location to see the weather
+                    </p>
+                ) : (
+                    <LocationList
+                        locations={locations}
+                        setLocation={setLocation}
+                    />
+                )}
+            </section>
         </main>
     );
 };
