@@ -15,7 +15,7 @@ export const WeatherResult: React.FC<WeatherResultProps> = ({
     return (
         <div>
             {location && (
-                <h3>
+                <h3 style={{ marginBottom: "1rem" }}>
                     Weather for {location.name}, {location.country}
                 </h3>
             )}
