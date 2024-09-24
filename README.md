@@ -16,3 +16,4 @@ npm run dev
 
 -   Push location into the QueryString and read from here to allow preloaded location URL's to be shared.
 -   Make use of the browser Geolocation API to be able to use the users current location as a default location
+-   Add extra details when you click on a day in the weather forecast view
