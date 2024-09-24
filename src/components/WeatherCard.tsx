@@ -21,7 +21,6 @@ const weatherCodesTyped: { [key: string]: WeatherCode } = weatherCodes;
 const getWeatherDescription = (code: number) => {
     //Cast the code to a string to use it as a key
     const weatherCode = code.toString();
-    console.log(weatherCode);
     const weatherCodeResult = weatherCodesTyped[weatherCode];
     return (
         weatherCodeResult ?? {
