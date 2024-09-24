@@ -34,8 +34,6 @@ const App = () => {
                         type="text"
                         placeholder="Enter a location"
                         aria-label="Enter a location"
-                        // value={userLocation}
-                        // onChange={(e) => setUserLocation(e.target.value)}
                     />
                     <button>Search</button>
                 </form>
